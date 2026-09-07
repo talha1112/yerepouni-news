@@ -115,4 +115,16 @@ app.get("/api/image",(req,res)=>{
     upstream.pipe(res);
   }).on("error",()=>res.status(502).end());
 });
+app.get("/api/debug",async(req,res)=>{
+  const target=req.query.url||`https://${allowedHost}/`;
+  try{
+    const r=await fetch(target,{headers:{"User-Agent":BROWSER_UA}});
+    const body=await r.text();
+    res.json({
+      status:r.status,
+      headers:Object.fromEntries(r.headers.entries()),
+      bodyPreview:body.slice(0,800)
+    });
+  }catch(e){res.json({error:e.message})}
+});
 app.listen(process.env.PORT||3000,()=>console.log("Yerepouni app running on http://localhost:"+(process.env.PORT||3000)));
