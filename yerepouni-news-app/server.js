@@ -3,7 +3,13 @@ const cors=require("cors");
 const Parser=require("rss-parser");
 const path=require("path");
 const https=require("https");
-const app=express(); const parser=new Parser({timeout:15000});
+const app=express();
+// Cloudflare (fronting yerepouni-news.com) blocks requests with no/unusual
+// User-Agent, which is what Node's default HTTP clients send — this trips
+// bot protection especially from datacenter IPs (e.g. Render). Send a
+// normal browser UA on every upstream request so we look like a browser.
+const BROWSER_UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+const parser=new Parser({timeout:15000,headers:{"User-Agent":BROWSER_UA}});
 app.use(cors()); app.use(express.static(__dirname));
 const allowedHost="www.yerepouni-news.com";
 const ignoredCategories=new Set([
@@ -50,7 +56,7 @@ app.get("/api/search",async(req,res)=>{
   if(cached&&Date.now()-cached.at<SEARCH_CACHE_TTL_MS) return res.json(cached.data);
   try{
     const searchUrl=`https://${allowedHost}/wp-json/wp/v2/posts?search=${encodeURIComponent(q)}&per_page=12&_embed=1`;
-    const r=await fetch(searchUrl);
+    const r=await fetch(searchUrl,{headers:{"User-Agent":BROWSER_UA}});
     if(!r.ok) return res.status(502).json({error:"Search failed"});
     const posts=await r.json();
     const strip=html=>String(html||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
@@ -85,7 +91,7 @@ app.get("/api/article",async(req,res)=>{
     // only need the full body — category/image are kept from the RSS item
     // the client already has.
     const apiUrl=`https://${allowedHost}/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_fields=content`;
-    const r=await fetch(apiUrl);
+    const r=await fetch(apiUrl,{headers:{"User-Agent":BROWSER_UA}});
     if(!r.ok) return res.status(502).json({error:"Article fetch failed"});
     let text=await r.text();
     // The site's own newsfreak.php plugin emits PHP warnings before the
@@ -102,7 +108,7 @@ app.get("/api/image",(req,res)=>{
   let u;
   try{u=new URL(req.query.url)}catch{return res.status(400).end()}
   if(u.hostname!==allowedHost||u.protocol!=="https:") return res.status(400).end();
-  https.get(u,upstream=>{
+  https.get(u,{headers:{"User-Agent":BROWSER_UA}},upstream=>{
     if(upstream.statusCode!==200){res.status(502).end();return}
     res.set("Content-Type",upstream.headers["content-type"]||"image/jpeg");
     res.set("Cache-Control","public, max-age=86400");
