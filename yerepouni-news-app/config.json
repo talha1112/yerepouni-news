@@ -1,0 +1,200 @@
+{
+  "brand": {
+    "accent": "#482B6F",
+    "lightAccent": "#FFCAC5",
+    "logo": "https://www.yerepouni-news.com/wp-content/uploads/2023/12/yerepouni-logo-white.png",
+    "ad": "https://www.yerepouni-news.com/wp-content/uploads/2026/08/afhil-logo.png"
+  },
+  "languages": [
+    {
+      "id": "western",
+      "label": "Արեւմտահայերէն",
+      "general": "https://www.yerepouni-news.com/category/western-armenian/feed/"
+    },
+    {
+      "id": "eastern",
+      "label": "Արեւելահայերէն",
+      "general": "https://www.yerepouni-news.com/category/eastern-armenian/ea-news/feed/"
+    },
+    {
+      "id": "english",
+      "label": "English",
+      "general": "https://www.yerepouni-news.com/category/english/world-news/feed/"
+    }
+  ],
+  "featured": "https://www.yerepouni-news.com/category/mobile-home/feed/",
+  "todayInHistory": "https://www.yerepouni-news.com/category/todayinhistory/feed/",
+  "categories": [
+    {
+      "language": "western",
+      "languageLabel": "Արեւմտահայերէն",
+      "parent": "Լուրեր",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/western-armenian/wa-news/",
+      "rss": "https://www.yerepouni-news.com/category/western-armenian/wa-news/feed/"
+    },
+    {
+      "language": "western",
+      "languageLabel": "Արեւմտահայերէն",
+      "parent": "Յօդուածներ",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/western-armenian/wa-articles/",
+      "rss": "https://www.yerepouni-news.com/category/western-armenian/wa-articles/feed/"
+    },
+    {
+      "language": "western",
+      "languageLabel": "Արեւմտահայերէն",
+      "parent": "Հարցազրոյցներ",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/eastern-armenian/ea-articles/",
+      "rss": "https://www.yerepouni-news.com/category/eastern-armenian/ea-articles/feed/"
+    },
+    {
+      "language": "western",
+      "languageLabel": "Արեւմտահայերէն",
+      "parent": "Տնտեսական",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/eastern-armenian/ea-economy/",
+      "rss": "https://www.yerepouni-news.com/category/eastern-armenian/ea-economy/feed/"
+    },
+    {
+      "language": "western",
+      "languageLabel": "Արեւմտահայերէն",
+      "parent": "Արուեստ եւ Մշակոյթ",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/eastern-armenian/ea-art-culture/",
+      "rss": "https://www.yerepouni-news.com/category/eastern-armenian/ea-art-culture/feed/"
+    },
+    {
+      "language": "western",
+      "languageLabel": "Արեւմտահայերէն",
+      "parent": "Մարզական",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/eastern-armenian/ea-sports/",
+      "rss": "https://www.yerepouni-news.com/category/eastern-armenian/ea-sports/feed/"
+    },
+    {
+      "language": "eastern",
+      "languageLabel": "Արեւելահայերէն",
+      "parent": "Լուրեր",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/eastern-armenian/ea-news/",
+      "rss": "https://www.yerepouni-news.com/category/eastern-armenian/ea-news/feed/"
+    },
+    {
+      "language": "eastern",
+      "languageLabel": "Արեւելահայերէն",
+      "parent": "Հարցազրոյցներ",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/eastern-armenian/ea-interviews/",
+      "rss": "https://www.yerepouni-news.com/category/eastern-armenian/ea-interviews/feed/"
+    },
+    {
+      "language": "eastern",
+      "languageLabel": "Արեւելահայերէն",
+      "parent": "Յօդուածներ",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/eastern-armenian/ea-articles/",
+      "rss": "https://www.yerepouni-news.com/category/eastern-armenian/ea-articles/feed/"
+    },
+    {
+      "language": "eastern",
+      "languageLabel": "Արեւելահայերէն",
+      "parent": "Տնտեսական",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/eastern-armenian/ea-economy/",
+      "rss": "https://www.yerepouni-news.com/category/eastern-armenian/ea-economy/feed/"
+    },
+    {
+      "language": "eastern",
+      "languageLabel": "Արեւելահայերէն",
+      "parent": "Արուեստ եւ Մշակոյթ",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/eastern-armenian/ea-art-culture/",
+      "rss": "https://www.yerepouni-news.com/category/eastern-armenian/ea-art-culture/feed/"
+    },
+    {
+      "language": "eastern",
+      "languageLabel": "Արեւելահայերէն",
+      "parent": "Մարզական",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/eastern-armenian/ea-sports/",
+      "rss": "https://www.yerepouni-news.com/category/eastern-armenian/ea-sports/feed/"
+    },
+    {
+      "language": "english",
+      "languageLabel": "English",
+      "parent": "World News",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/english/world-news/",
+      "rss": "https://www.yerepouni-news.com/category/english/world-news/feed/"
+    },
+    {
+      "language": "english",
+      "languageLabel": "English",
+      "parent": "International Press",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/english/international-press/",
+      "rss": "https://www.yerepouni-news.com/category/english/international-press/feed/"
+    },
+    {
+      "language": "english",
+      "languageLabel": "English",
+      "parent": "Science & Technology",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/english/technology-technology/",
+      "rss": "https://www.yerepouni-news.com/category/english/technology-technology/feed/"
+    },
+    {
+      "language": "english",
+      "languageLabel": "English",
+      "parent": "Markets & Economy",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/english/markets-and-economy/",
+      "rss": "https://www.yerepouni-news.com/category/english/markets-and-economy/feed/"
+    },
+    {
+      "language": "english",
+      "languageLabel": "English",
+      "parent": "Arts & Entertainments",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/english/arts-entertainments/",
+      "rss": "https://www.yerepouni-news.com/category/english/arts-entertainments/feed/"
+    },
+    {
+      "language": "english",
+      "languageLabel": "English",
+      "parent": "Health",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/english/health/",
+      "rss": "https://www.yerepouni-news.com/category/english/health/feed/"
+    },
+    {
+      "language": "english",
+      "languageLabel": "English",
+      "parent": "Culture",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/english/culture/",
+      "rss": "https://www.yerepouni-news.com/category/english/culture/feed/"
+    },
+    {
+      "language": "english",
+      "languageLabel": "English",
+      "parent": "Social",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/english/social/",
+      "rss": "https://www.yerepouni-news.com/category/english/social/feed/"
+    },
+    {
+      "language": "english",
+      "languageLabel": "English",
+      "parent": "Sports",
+      "name": "",
+      "url": "https://www.yerepouni-news.com/category/english/sports/",
+      "rss": "https://www.yerepouni-news.com/category/english/sports/feed/"
+    }
+  ],
+  "contact": "https://www.yerepouni-news.com/contact-us/",
+  "website": "https://www.yerepouni-news.com/",
+  "facebook": "https://www.facebook.com/YerepouniDailynews/"
+}
