@@ -4,12 +4,19 @@ const Parser=require("rss-parser");
 const path=require("path");
 const https=require("https");
 const app=express();
-// Cloudflare (fronting yerepouni-news.com) blocks requests with no/unusual
-// User-Agent, which is what Node's default HTTP clients send — this trips
-// bot protection especially from datacenter IPs (e.g. Render). Send a
-// normal browser UA on every upstream request so we look like a browser.
+// Cloudflare (fronting yerepouni-news.com) serves a JS challenge page to
+// requests from cloud/datacenter IPs (Render, Railway, etc. all trip this).
+// No header or Node HTTP client can solve a JS challenge, so blocked
+// requests (feed/wp-json paths) are routed through ScraperAPI, which runs
+// real browsers to get past it and hands back the clean response. Static
+// assets (images) aren't challenged, so those still go direct.
+const SCRAPERAPI_KEY=process.env.SCRAPERAPI_KEY||"";
+function viaScraperApi(targetUrl){
+  if(!SCRAPERAPI_KEY) return targetUrl;
+  return `https://api.scraperapi.com/?api_key=${SCRAPERAPI_KEY}&url=${encodeURIComponent(targetUrl)}`;
+}
 const BROWSER_UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
-const parser=new Parser({timeout:15000,headers:{"User-Agent":BROWSER_UA}});
+const parser=new Parser({timeout:30000,headers:{"User-Agent":BROWSER_UA}});
 app.use(cors()); app.use(express.static(__dirname));
 const allowedHost="www.yerepouni-news.com";
 const ignoredCategories=new Set([
@@ -30,7 +37,11 @@ app.get("/api/feed",async(req,res)=>{
   try{
     const u=new URL(req.query.url);
     if(u.hostname!==allowedHost) return res.status(400).json({error:"Only Yerepouni feeds are allowed"});
-    const feed=await parser.parseURL(u.toString());
+    // Cloudflare's challenge is probabilistic per proxy IP; retry once more
+    // on failure rather than surfacing a transient error to the user.
+    let feed;
+    try{ feed=await parser.parseURL(viaScraperApi(u.toString())) }
+    catch{ feed=await parser.parseURL(viaScraperApi(u.toString())) }
     const items=(feed.items||[]).map(i=>{
       const content=i["content:encoded"]||i.content||"";
       const imgMatch=content.match(/<img[^>]+src=["']([^"']+)["']/i);
@@ -56,9 +67,22 @@ app.get("/api/search",async(req,res)=>{
   if(cached&&Date.now()-cached.at<SEARCH_CACHE_TTL_MS) return res.json(cached.data);
   try{
     const searchUrl=`https://${allowedHost}/wp-json/wp/v2/posts?search=${encodeURIComponent(q)}&per_page=12&_embed=1`;
-    const r=await fetch(searchUrl,{headers:{"User-Agent":BROWSER_UA}});
-    if(!r.ok) return res.status(502).json({error:"Search failed"});
-    const posts=await r.json();
+    // ScraperAPI's success rate against this site's Cloudflare challenge is
+    // probabilistic (different proxy IPs per request, each taking 30-60s).
+    // Firing several attempts in parallel and taking whichever succeeds
+    // first keeps latency close to one attempt instead of stacking retries.
+    const attempt=async()=>{
+      const r=await fetch(viaScraperApi(searchUrl),{headers:{"User-Agent":BROWSER_UA}});
+      if(!r.ok) throw new Error("bad status "+r.status);
+      const parsed=await r.json();
+      if(!Array.isArray(parsed)) throw new Error("unexpected response shape");
+      return parsed;
+    };
+    // Promise.any resolves as soon as the first attempt succeeds, rather
+    // than waiting for all three (which Promise.allSettled would do).
+    let posts=null;
+    try{ posts=await Promise.any([attempt(),attempt(),attempt()]) }catch{/* all three failed */}
+    if(!posts) return res.status(502).json({error:"Search failed"});
     const strip=html=>String(html||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
     const items=(Array.isArray(posts)?posts:[]).map(p=>{
       const media=p._embedded?.["wp:featuredmedia"]?.[0];
@@ -91,7 +115,10 @@ app.get("/api/article",async(req,res)=>{
     // only need the full body — category/image are kept from the RSS item
     // the client already has.
     const apiUrl=`https://${allowedHost}/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_fields=content`;
-    const r=await fetch(apiUrl,{headers:{"User-Agent":BROWSER_UA}});
+    // Cloudflare's challenge is probabilistic per proxy IP; retry once more
+    // on failure rather than surfacing a transient error to the user.
+    let r=await fetch(viaScraperApi(apiUrl),{headers:{"User-Agent":BROWSER_UA}});
+    if(!r.ok) r=await fetch(viaScraperApi(apiUrl),{headers:{"User-Agent":BROWSER_UA}});
     if(!r.ok) return res.status(502).json({error:"Article fetch failed"});
     let text=await r.text();
     // The site's own newsfreak.php plugin emits PHP warnings before the
@@ -114,17 +141,5 @@ app.get("/api/image",(req,res)=>{
     res.set("Cache-Control","public, max-age=86400");
     upstream.pipe(res);
   }).on("error",()=>res.status(502).end());
-});
-app.get("/api/debug",async(req,res)=>{
-  const target=req.query.url||`https://${allowedHost}/`;
-  try{
-    const r=await fetch(target,{headers:{"User-Agent":BROWSER_UA}});
-    const body=await r.text();
-    res.json({
-      status:r.status,
-      headers:Object.fromEntries(r.headers.entries()),
-      bodyPreview:body.slice(0,800)
-    });
-  }catch(e){res.json({error:e.message})}
 });
 app.listen(process.env.PORT||3000,()=>console.log("Yerepouni app running on http://localhost:"+(process.env.PORT||3000)));
