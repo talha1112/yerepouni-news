@@ -1,9 +1,0 @@
-{
-  "name": "Yerepouni News",
-  "short_name": "Yerepouni",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#482B6F",
-  "icons": []
-}

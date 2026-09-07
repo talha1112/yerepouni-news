@@ -1,26 +1,25 @@
-# Yerepouni News — live RSS app prototype
+# Yerepouni News — RSS/API proxy
 
-This version implements the mobile-first app shell and a small RSS proxy layer.
+A small Node/Express backend that proxies Yerepouni's WordPress RSS feeds
+and REST API for the Flutter app in `../yerepouni_news_flutter`. It exists
+because browsers/apps can't fetch `yerepouni-news.com`'s feeds directly
+(no CORS headers), and because the site's RSS excerpts are truncated.
 
 ## Run locally
 1. Install Node.js 18+.
 2. In this folder run:
    npm install
    npm start
-3. Open http://localhost:3000
+3. Server listens on http://localhost:3000 (or `$PORT`)
 
-The app uses the Yerepouni WordPress URLs in `config.json`, including:
-- Western Armenian general: https://www.yerepouni-news.com/category/western-armenian/
-- Featured: https://www.yerepouni-news.com/category/mobile-home/
-- Category feeds derived from the supplied Excel file.
+Only `www.yerepouni-news.com` is allowed as an upstream host, to avoid
+turning this into an open proxy.
 
-The proxy only permits `www.yerepouni-news.com` to avoid turning the endpoint into a general open proxy.
-
-## Current behavior
-- Western Armenian is the default edition.
-- Menu: 3 languages, each expanding to its own Excel-provided categories.
-- Featured News loads from mobile-home.
-- Latest News loads from the current edition.
-- AFHIL logo is inserted after every 5 latest articles.
-- Article cards open the original WordPress article.
-- Search and “ՊԱՏՄՈՒԹԵԱՆ ՄԷՋ ԱՅՍՕՐ” are placeholders for later integration.
+## Endpoints
+- `GET /api/feed?url=<rss-feed-url>` — parses an RSS feed into JSON items.
+- `GET /api/article?url=<article-link>` — fetches the full article body
+  (RSS only exposes a truncated excerpt).
+- `GET /api/search?q=<query>` — searches Yerepouni via WordPress's REST
+  API (results are cached briefly server-side; their search is slow).
+- `GET /api/image?url=<image-url>` — streams an image with CORS headers,
+  for platforms (Flutter web) that can't load it directly.
