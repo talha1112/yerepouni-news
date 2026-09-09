@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../app_theme.dart';
 import '../models/article.dart';
 import '../services/bookmark_service.dart';
@@ -92,11 +91,6 @@ class _ArticleReaderScreenState extends State<ArticleReaderScreen> {
     if (mounted) setState(() => _isBookmarked = on);
   }
 
-  Future<void> _openOriginal() async {
-    final uri = Uri.tryParse(widget.article.link);
-    if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
-  }
-
   @override
   Widget build(BuildContext context) {
     final a = _article;
@@ -112,15 +106,6 @@ class _ArticleReaderScreenState extends State<ArticleReaderScreen> {
             IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, size: 18),
               onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton.icon(
-              onPressed: _openOriginal,
-              icon: const Icon(Icons.open_in_new, size: 16, color: Colors.white),
-              label: const Text('Open in web', style: TextStyle(color: Colors.white, fontSize: 13)),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-              ),
             ),
           ],
         ),
@@ -191,6 +176,10 @@ class _ArticleReaderScreenState extends State<ArticleReaderScreen> {
                   }
                   return null;
                 },
+                // Keep readers inside the app: links cited within article
+                // bodies (e.g. sources) shouldn't hand off to an external
+                // browser. Returning true marks the tap as handled/no-op.
+                onTapUrl: (_) async => true,
               ),
             if (widget.relatedRssUrl != null) ...[
               const SizedBox(height: 28),

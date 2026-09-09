@@ -96,30 +96,33 @@ class _AppDrawerState extends State<AppDrawer> {
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ...cats.map((c) => InkWell(
-                                      onTap: () => widget.onSelectCategory(c),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
-                                        child: Text(c.displayName,
-                                            style: const TextStyle(color: Color(0xFF625A67))),
-                                      ),
-                                    )),
-                                InkWell(
-                                  onTap: widget.onOpenToday,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
-                                    child: Text(AppDrawer._todayInHistoryLabel,
-                                        style: const TextStyle(color: Color(0xFF625A67))),
-                                  ),
-                                ),
-                              ],
+                              children: cats
+                                  .map((c) => InkWell(
+                                        onTap: () => widget.onSelectCategory(c),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
+                                          child: Text(c.displayName,
+                                              style: const TextStyle(color: Color(0xFF625A67))),
+                                        ),
+                                      ))
+                                  .toList(),
                             ),
                           ),
                       ],
                     ),
                   );
                 }),
+                InkWell(
+                  onTap: widget.onOpenToday,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(color: AppColors.divider)),
+                    ),
+                    child: const Text(AppDrawer._todayInHistoryLabel,
+                        style: TextStyle(fontFamily: 'Georgia', fontSize: 17, color: AppColors.accent)),
+                  ),
+                ),
                 const SizedBox(height: 14),
                 _FooterLink(label: 'Contact Us', onTap: () => _open(widget.config.contact)),
                 _FooterLink(label: 'Website', onTap: () => _open(widget.config.website)),
